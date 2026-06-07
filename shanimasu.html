@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>シャニマス — GREEN SONICA</title>
+<link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@700&family=Noto+Serif+JP:wght@400;700&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #fff;
+  font-family: "MS Gothic", "ＭＳ ゴシック", monospace;
+  font-size: 13px;
+  color: #000;
+  padding: 0;
+}
+.page-wrap {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 16px;
+  border-left: 1px solid #999;
+  border-right: 1px solid #999;
+  min-height: 100vh;
+}
+.page-top {
+  background: #1a5c1a;
+  color: #ccffcc;
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 13px;
+  padding: 4px 10px;
+  letter-spacing: 3px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.page-top a {
+  color: #ccffcc;
+  text-decoration: none;
+  font-size: 11px;
+  opacity: 0.8;
+}
+.page-top a:hover { text-decoration: underline; }
+.page-title {
+  font-family: "MS Gothic", monospace;
+  font-size: 18px;
+  font-weight: bold;
+  color: #1a5c1a;
+  border-bottom: 2px solid #1a5c1a;
+  padding-bottom: 4px;
+  margin: 12px 0 8px;
+  letter-spacing: 2px;
+}
+.ts-rule { border: none; border-top: 1px solid #7ab87a; margin: 6px 0; }
+.ts-section-title {
+  background: #1a5c1a;
+  color: #ccffcc;
+  padding: 2px 8px;
+  font-size: 12px;
+  letter-spacing: 2px;
+  display: inline-block;
+  margin: 10px 0 6px;
+}
+.ts-note {
+  font-family: "ＭＳ 明朝", "Noto Serif JP", serif;
+  font-size: 12px;
+  color: #555;
+  margin-bottom: 10px;
+  line-height: 1.8;
+}
+
+/* ── アニメーション共通 ── */
+.collapsible {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.22s ease;
+  overflow: hidden;
+}
+.collapsible.open {
+  grid-template-rows: 1fr;
+}
+.collapsible-inner {
+  overflow: hidden;
+}
+
+/* ── ユニット ── */
+.unit-list { margin: 0; padding: 0; list-style: none; }
+.unit-item { margin-bottom: 2px; }
+
+.unit-btn {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 5px 10px;
+  font-family: "MS Gothic", monospace;
+  font-size: 13px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  border: 1px solid rgba(0,0,0,0.2);
+  cursor: pointer;
+  color: #fff;
+  transition: opacity 0.15s;
+  position: relative;
+}
+.unit-btn::after {
+  content: '▶';
+  position: absolute;
+  right: 10px;
+  font-size: 10px;
+  opacity: 0.7;
+  transition: transform 0.22s ease;
+}
+.unit-btn.open::after { transform: rotate(90deg); }
+.unit-btn:hover { opacity: 0.85; }
+
+.unit-body-wrap {
+  margin: 2px 0 4px 4px;
+  border-left: 3px solid #ccc;
+}
+.unit-body {
+  padding: 6px 0 6px 16px;
+}
+
+/* イベントコミュ行 */
+.event-btn {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 4px 8px;
+  font-family: "MS Gothic", monospace;
+  font-size: 12px;
+  background: #f0faf0;
+  border: 1px solid #7ab87a;
+  color: #1a5c1a;
+  cursor: pointer;
+  margin-bottom: 4px;
+  letter-spacing: 1px;
+  position: relative;
+}
+.event-btn::after {
+  content: '▶';
+  position: absolute;
+  right: 8px;
+  font-size: 10px;
+  opacity: 0.6;
+  transition: transform 0.22s ease;
+}
+.event-btn.open::after { transform: rotate(90deg); }
+
+/* イベント/コミュ リスト */
+.event-list-wrap {
+  margin: 0 0 6px 4px;
+  border-left: 2px solid #7ab87a;
+}
+.event-list a, .sub-list-inner a {
+  display: block;
+  padding: 3px 6px;
+  font-family: "MS Gothic", monospace;
+  font-size: 12px;
+  color: #1a5c1a;
+  text-decoration: none;
+  border-bottom: 1px dotted #ccc;
+  line-height: 1.6;
+}
+.event-list a:hover, .sub-list-inner a:hover {
+  background: #f0faf0;
+  text-decoration: underline;
+}
+.event-list {
+  padding: 4px 0 4px 12px;
+}
+
+/* アイドル行 */
+.idol-btn {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 3px 8px;
+  font-family: "MS Gothic", monospace;
+  font-size: 12px;
+  border: 1px solid rgba(0,0,0,0.15);
+  cursor: pointer;
+  margin-bottom: 2px;
+  color: #fff;
+  position: relative;
+  transition: opacity 0.15s;
+}
+.idol-btn::after {
+  content: '▶';
+  position: absolute;
+  right: 8px;
+  font-size: 9px;
+  opacity: 0.7;
+  transition: transform 0.22s ease;
+}
+.idol-btn.open::after { transform: rotate(90deg); }
+.idol-btn:hover { opacity: 0.85; }
+
+.idol-body-wrap {
+  margin: 0 0 4px 4px;
+  border-left: 2px solid #ccc;
+}
+.idol-body {
+  padding: 4px 0 4px 12px;
+}
+
+/* サブカテゴリ */
+.sub-btn {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 3px 8px;
+  font-family: "MS Gothic", monospace;
+  font-size: 12px;
+  background: #f8f8f8;
+  border: 1px solid #bbb;
+  color: #333;
+  cursor: pointer;
+  margin-bottom: 2px;
+  position: relative;
+}
+.sub-btn::after {
+  content: '▶';
+  position: absolute;
+  right: 8px;
+  font-size: 9px;
+  opacity: 0.5;
+  transition: transform 0.22s ease;
+}
+.sub-btn.open::after { transform: rotate(90deg); }
+.sub-btn:hover { background: #efefef; }
+
+/* 非活性（工事中）スタイル */
+.btn-disabled {
+  opacity: 0.5;
+  cursor: default;
+  pointer-events: none;
+}
+.btn-disabled::after {
+  content: '　🚧 工事中' !important;
+  opacity: 1;
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+
+.sub-list-wrap {
+  margin: 0 0 4px 4px;
+  border-left: 2px solid #ddd;
+}
+.sub-list-inner {
+  padding: 4px 0 4px 12px;
+}
+
+.ts-footer {
+  text-align: center;
+  font-size: 11px;
+  color: #3a7a3a;
+  margin-top: 20px;
+  border-top: 1px dashed #7ab87a;
+  padding-top: 6px;
+}
+</style>
+</head>
+<body>
+<div class="page-wrap">
+  <div class="page-top">
+    <a href="index.html">← GREEN SONICA</a>
+    <span>/</span>
+    <span>シャニマス</span>
+  </div>
+
+  <div class="page-title">✨ シャニマス</div>
+
+  <p class="ts-note">
+    シャイニーカラーズのシナリオ・ライブの感想置き場です。<br>
+    ユニット → メンバー or イベントコミュ の順にクリックして展開してください。
+  </p>
+
+  <hr class="ts-rule">
+  <span class="ts-section-title">■ UNITS</span>
+
+  <ul class="unit-list" id="unit-list"></ul>
+
+  <hr class="ts-rule">
+  <div class="ts-footer">
+    <a href="index.html" style="color:#1a5c1a;">← GREEN SONICA トップへ戻る</a>
+  </div>
+</div>
+
+<script>
+const data = [
+  {
+    unit: 'イルミネーションスターズ',
+    unitColor: '#fff68d',
+    textColor: '#000',
+    borderColor: '#c9a800',
+    events: [
+          { title: 'イベント「〇〇」感想', url: 'https://note.com/...' }
+    ],
+    idols: [
+      { name: '櫻木真乃', color: '#ffbad6', text: '#fff' },
+      { name: '風野灯織', color: '#144384', text: '#fff' },
+      { name: '八宮めぐる', color: '#ffe012', text: '#000' },
+    ]
+  },
+  {
+    unit: 'アンティーカ',
+    unitColor: '#853998',
+    textColor: '#fff',
+    borderColor: '#8c5a8c',
+    events: [],
+    idols: [
+      { name: '月岡恋鐘', color: '#f84cad', text: '#fff' },
+      { name: '田中摩美々', color: '#a846fb', text: '#fff' },
+      { name: '白瀬咲耶', color: '#006047', text: '#fff' },
+      { name: '三峰結華', color: '#3b91c4', text: '#fff' },
+      { name: '幽谷霧子', color: '#d9f2ff', text: '#000' },
+    ]
+  },
+  {
+    unit: '放課後クライマックスガールズ',
+    unitColor: '#fa8333',
+    textColor: '#fff',
+    borderColor: '#b02020',
+    events: [],
+    idols: [
+      { name: '小宮果穂',   color: '#e5461c', text: '#fff' },
+      { name: '園田智代子', color: '#f93b90', text: '#fff' },
+      { name: '西城樹里',   color: '#ffc602', text: '#000' },
+      { name: '杜野凛世',   color: '#89c3eb', text: '#fff' },
+      { name: '有栖川夏葉', color: '#90e667', text: '#000' },
+    ]
+  },
+  {
+    unit: 'アルストロメリア',
+    unitColor: '#ff699e',
+    textColor: '#fff',
+    borderColor: '#c86496',
+    events: [],
+    idols: [
+      { name: '桑山千雪', color: '#f54275', text: '#000' },
+      { name: '大崎甘奈', color: '#e75bec', text: '#fff' },
+      { name: '大崎甜花', color: '#fafafa', text: '#000' },
+    ]
+  },
+  {
+    unit: 'ストレイライト',
+    unitColor: '#af011c',
+    textColor: '#fff',
+    borderColor: '#282860',
+    events: [],
+    idols: [
+      { name: '芹沢あさひ', color: '#f30100', text: '#fff' },
+      { name: '黛冬優子',   color: '#5aff19', text: '#000' },
+      { name: '和泉愛依',   color: '#ff00ff', text: '#fff' },
+    ]
+  },
+  {
+    unit: 'ノクチル',
+    unitColor: '#384d98',
+    textColor: '#fff',
+    borderColor: '#3c8cb4',
+    events: [],
+    idols: [
+      { name: '浅倉透',   color: '#50d0d0', text: '#000',
+  idolCommu: [
+    { title: 'アイドルコミュ1「タイトル」', url: 'https://note.com/...' },
+    { title: 'アイドルコミュ2「タイトル」', url: 'https://note.com/...' },
+  ],
+  supportCommu: [
+    { title: '【透/SR】カード名', url: 'https://note.com/...' },
+  ],
+},
+      { name: '樋口円香', color: '#be1e3e', text: '#fff',
+  idolCommu: [
+    { title: '「タイトル」', url: 'https://note.com/...' },
+    { title: '「タイトル」', url: 'https://note.com/...' },
+  ],
+  supportCommu: [
+    { title: '【透/SR】カード名', url: 'https://note.com/...' },
+  ],
+},
+      { name: '福丸小糸', color: '#7967c3', text: '#fff' },
+      { name: '市川雛菜', color: '#ffc639', text: '#fff' },
+    ]
+  },
+  {
+    unit: 'シーズ',
+    unitColor: '#008e74',
+    textColor: '#fff',
+    borderColor: '#6450a0',
+    events: [],
+    idols: [
+      { name: '七草にちか', color: '#a6cdb6', text: '#fff' },
+      { name: '緋田美琴',   color: '#760f10', text: '#fff' },
+    ]
+  },
+  {
+    unit: 'コメティック',
+    unitColor: '#333333',
+    textColor: '#fff',
+    borderColor: '#b49600',
+    events: [],
+    idols: [
+      { name: '斑鳩ルカ',   color: '#35281f', text: '#fff' },
+      { name: '鈴木羽那',   color: '#e0b5d3', text: '#000' },
+      { name: '郁田はるき', color: '#ead7a4', text: '#000' },
+    ]
+  },
+];
+
+// ★ プロデュースシナリオ：各アイドル共通。urlを後から差し替えてください
+const PRODUCE_SCENARIOS = [
+  { title: '【W.I.N.G】',          url: '' },
+  { title: '【ファン感謝祭】',     url: '' },
+  { title: '【G.R.A.D】',          url: '' },
+  { title: '【Landing point】',    url: '' },
+  { title: '【S.T.E.P.】',         url: '' },
+];
+
+// ── ヘルパー：grid-template-rows でアニメーション ──
+function makeCollapsible(innerEl, borderColor) {
+  const wrap = document.createElement('div');
+  wrap.className = 'collapsible';
+  if (borderColor) wrap.style.borderLeftColor = borderColor;
+  const inner = document.createElement('div');
+  inner.className = 'collapsible-inner';
+  inner.appendChild(innerEl);
+  wrap.appendChild(inner);
+  return wrap;
+}
+
+function toggleCollapsible(btn, wrap) {
+  const isOpen = wrap.classList.contains('open');
+  wrap.classList.toggle('open', !isOpen);
+  btn.classList.toggle('open', !isOpen);
+}
+
+// ── リスト生成ヘルパー ──
+function makeLinks(items) {
+  const div = document.createElement('div');
+  if (items && items.length > 0) {
+    items.forEach(item => {
+      const a = document.createElement('a');
+      a.textContent = item.title || item;
+      if (item.url) {
+        a.href = item.url;
+        a.target = '_blank';
+      } else {
+        a.href = '#';
+        a.style.color = '#aaa';
+        a.addEventListener('click', e => e.preventDefault());
+      }
+      div.appendChild(a);
+    });
+  } else {
+    const a = document.createElement('a');
+    a.href = '#';
+    a.textContent = '（記事を追加予定）';
+    a.style.color = '#aaa';
+    a.addEventListener('click', e => e.preventDefault());
+    div.appendChild(a);
+  }
+  return div;
+}
+
+// ── サブセクション（プロデュースシナリオ / アイドルコミュ / サポートコミュ）──
+// active: false のとき非活性（工事中）表示
+function makeSubSection(label, items, active) {
+  const btn = document.createElement('button');
+  btn.className = 'sub-btn';
+  btn.textContent = label;
+
+  if (!active) {
+    btn.classList.add('btn-disabled');
+    btn.title = '工事中';
+    // 非活性時はクリック無効
+    btn.addEventListener('click', e => e.preventDefault());
+    const frag = document.createDocumentFragment();
+    frag.appendChild(btn);
+    return frag;
+  }
+
+  const innerDiv = document.createElement('div');
+  innerDiv.className = 'sub-list-inner';
+  const links = makeLinks(items);
+  innerDiv.appendChild(links);
+
+  const wrapOuter = document.createElement('div');
+  wrapOuter.className = 'sub-list-wrap';
+  const collapsible = makeCollapsible(innerDiv);
+  wrapOuter.appendChild(collapsible);
+
+  btn.addEventListener('click', () => toggleCollapsible(btn, collapsible));
+
+  const frag = document.createDocumentFragment();
+  frag.appendChild(btn);
+  frag.appendChild(wrapOuter);
+  return frag;
+}
+
+// ── メイン描画 ──
+const unitList = document.getElementById('unit-list');
+
+data.forEach(unit => {
+  const li = document.createElement('li');
+  li.className = 'unit-item';
+
+  // ユニットボタン
+  const unitBtn = document.createElement('button');
+  unitBtn.className = 'unit-btn';
+  unitBtn.textContent = unit.unit;
+  unitBtn.style.background = unit.unitColor;
+  unitBtn.style.color = unit.textColor;
+  unitBtn.style.borderColor = unit.borderColor;
+
+  // ユニット本体
+  const unitBodyDiv = document.createElement('div');
+  unitBodyDiv.className = 'unit-body';
+
+  // イベントコミュ
+  const eventBtn = document.createElement('button');
+  eventBtn.className = 'event-btn';
+  eventBtn.textContent = 'イベントコミュ';
+
+  const hasEvents = unit.events && unit.events.length > 0;
+
+  if (!hasEvents) {
+    eventBtn.classList.add('btn-disabled');
+    eventBtn.title = '工事中';
+    eventBtn.addEventListener('click', e => e.preventDefault());
+    unitBodyDiv.appendChild(eventBtn);
+  } else {
+    const eventInner = document.createElement('div');
+    eventInner.className = 'event-list';
+    const eventLinks = makeLinks(unit.events);
+    eventInner.appendChild(eventLinks);
+
+    const eventListWrap = document.createElement('div');
+    eventListWrap.className = 'event-list-wrap';
+    const eventCollapsible = makeCollapsible(eventInner);
+    eventListWrap.appendChild(eventCollapsible);
+
+    eventBtn.addEventListener('click', () => toggleCollapsible(eventBtn, eventCollapsible));
+
+    unitBodyDiv.appendChild(eventBtn);
+    unitBodyDiv.appendChild(eventListWrap);
+  }
+
+  // アイドル一覧
+  unit.idols.forEach(idol => {
+    const idolBtn = document.createElement('button');
+    idolBtn.className = 'idol-btn';
+    idolBtn.textContent = idol.name;
+    idolBtn.style.background = idol.color;
+    idolBtn.style.color = idol.text;
+
+    // アイドルが活性かどうか（子に1つでも記事があるか）
+    const prodActive = PRODUCE_SCENARIOS.some(s => s.url);
+    const idolCommuActive = !!idol.idolCommu;
+    const supportCommuActive = !!idol.supportCommu;
+    const idolActive = prodActive || idolCommuActive || supportCommuActive;
+
+    if (!idolActive) {
+      idolBtn.classList.add('btn-disabled');
+      idolBtn.title = '工事中';
+      idolBtn.addEventListener('click', e => e.preventDefault());
+      unitBodyDiv.appendChild(idolBtn);
+      return; // このアイドルの中身は描画しない
+    }
+
+    const idolBodyDiv = document.createElement('div');
+    idolBodyDiv.className = 'idol-body';
+
+    // プロデュースシナリオ（urlが1つでも埋まっていれば活性）
+    idolBodyDiv.appendChild(makeSubSection('プロデュースシナリオ', PRODUCE_SCENARIOS, prodActive));
+    // アイドルコミュ
+    idolBodyDiv.appendChild(makeSubSection('アイドルコミュ', idol.idolCommu || null, idolCommuActive));
+    // サポートコミュ
+    idolBodyDiv.appendChild(makeSubSection('サポートコミュ', idol.supportCommu || null, supportCommuActive));
+
+    const idolBodyWrap = document.createElement('div');
+    idolBodyWrap.className = 'idol-body-wrap';
+    idolBodyWrap.style.borderLeftColor = idol.color;
+    const idolCollapsible = makeCollapsible(idolBodyDiv);
+    idolBodyWrap.appendChild(idolCollapsible);
+
+    idolBtn.addEventListener('click', () => toggleCollapsible(idolBtn, idolCollapsible));
+
+    unitBodyDiv.appendChild(idolBtn);
+    unitBodyDiv.appendChild(idolBodyWrap);
+  });
+
+  // ユニットが活性かどうか（イベントコミュ or アイドルが1人でも活性なら活性）
+  const prodActive = PRODUCE_SCENARIOS.some(s => s.url);
+  const unitActive = hasEvents ||
+    unit.idols.some(idol =>
+      prodActive || !!idol.idolCommu || !!idol.supportCommu
+    );
+
+  // ユニット全体をアニメ付きラッパーで包む
+  const unitBodyWrap = document.createElement('div');
+  unitBodyWrap.className = 'unit-body-wrap';
+  unitBodyWrap.style.borderLeftColor = unit.unitColor;
+  const unitCollapsible = makeCollapsible(unitBodyDiv);
+  unitBodyWrap.appendChild(unitCollapsible);
+
+  if (!unitActive) {
+    unitBtn.classList.add('btn-disabled');
+    unitBtn.title = '工事中';
+    unitBtn.addEventListener('click', e => e.preventDefault());
+  } else {
+    unitBtn.addEventListener('click', () => toggleCollapsible(unitBtn, unitCollapsible));
+  }
+
+  li.appendChild(unitBtn);
+  if (unitActive) li.appendChild(unitBodyWrap);
+  unitList.appendChild(li);
+});
+</script>
+</body>
+</html>
